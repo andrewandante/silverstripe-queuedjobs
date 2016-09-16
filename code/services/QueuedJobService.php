@@ -615,12 +615,18 @@ class QueuedJobService {
 
 		Config::unnest();
 
-		// okay lets reset our user if we've got an original
+		// okay let's reset our user if we've got an original
 		if ($runAsUser && $originalUser) {
 			Session::clear("loggedInAs");
 			if ($originalUser) {
 				Session::set("loggedInAs", $originalUser->ID);
 			}
+		}
+
+		// let's make sure there is a cleanupJob in the queue
+		if (Config::inst()->get('CleanupJob', 'is_enabled')) {
+			$cleanup = new CleanupJob();
+			$this->queueJob($cleanup, date('Y-m-d H:i:s', time() + 86400));
 		}
 
 		return !$broken;

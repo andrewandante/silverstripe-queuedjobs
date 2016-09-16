@@ -34,3 +34,4 @@ Injector:
       queuedJobService: %$QueuedJobService
   QueueHandler: 
     class: GearmanQueueHandler
+
